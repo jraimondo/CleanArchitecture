@@ -1,4 +1,5 @@
 using CleanArchitecture.Application;
+using CleanArchitecture.Infraestructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplicationServices();
-
+builder.Services.AddInfraestructureServices(builder.Configuration);
 
 var app = builder.Build();
 
