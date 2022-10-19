@@ -16,10 +16,6 @@ namespace CleanArchitecture.Infraestructure.Repositories
             _context = context;
         }
 
-
-
-        
-
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
@@ -82,8 +78,9 @@ namespace CleanArchitecture.Infraestructure.Repositories
 
         public async Task<T> UpdateAsync(T entity)
         {
+            _context.Set<T>().Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return entity;
         }
 
@@ -99,6 +96,22 @@ namespace CleanArchitecture.Infraestructure.Repositories
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
 
+        }
+
+        public void AddEntity(T Entity)
+        {
+            _context.Set<T>().Add(Entity);
+        }
+
+        public void UpdateEntity(T Entity)
+        {
+            _context.Set<T>().Attach(Entity);
+            _context.Entry(Entity).State = EntityState.Modified;
+        }
+
+        public void DeleteEntity(T Entity)
+        {
+            _context.Set<T>().Remove(Entity);
         }
     }
 }

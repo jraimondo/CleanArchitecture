@@ -7,14 +7,6 @@ namespace CleanArchitecture.Infraestructure.Persistence
     public class StreamerDbContext : DbContext
     {
 
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=CleanArchitectureDb")
-        //                  .LogTo(Console.WriteLine, new[] {DbLoggerCategory.Database.Command.Name})
-        //                  .EnableSensitiveDataLogging();
-        //}
-
         public StreamerDbContext(DbContextOptions<StreamerDbContext> options)
             : base(options)
         {
@@ -47,7 +39,27 @@ namespace CleanArchitecture.Infraestructure.Persistence
 
         public DbSet<Video>? Videos { get; set; }
 
+        public DbSet<Actor>? Actores { get; set; }
 
+        public DbSet<Director>? Directores { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Streamer>()
+                .HasMany(m => m.Videos)
+                .WithOne(m => m.Streamer)
+                .HasForeignKey(m => m.StreamerId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Video>()
+                .HasMany(p => p.Actores)
+                .WithMany(t => t.Videos)
+                .UsingEntity<VideoActor>(
+                    pt => pt.HasKey(e => new { e.ActorId, e.VideoId })
+                );
+        }
 
 
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Domain
 {
-    internal class VideoActor:BaseDomainModel
+    public class VideoActor:BaseDomainModel
     {
         public int VideoId { get; set; }
 

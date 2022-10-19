@@ -1,4 +1,6 @@
+using CleanArchitecture.Api.Middleware;
 using CleanArchitecture.Application;
+using CleanArchitecture.Identity;
 using CleanArchitecture.Infraestructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddApplicationServices();
 builder.Services.AddInfraestructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddConfigureIdentityServices(builder.Configuration);
+
+builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        );
+    });
 
 var app = builder.Build();
 
@@ -22,7 +33,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 

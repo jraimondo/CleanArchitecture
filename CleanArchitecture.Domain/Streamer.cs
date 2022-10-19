@@ -12,5 +12,7 @@ namespace CleanArchitecture.Domain
         public string Nombre { get; set; } = String.Empty;
 
         public string? Url { get; set; }
+
+        public ICollection<Video>? Videos { get; set; }
     }
 }
